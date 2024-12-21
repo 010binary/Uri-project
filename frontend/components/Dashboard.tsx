@@ -1,29 +1,60 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import JobApplicationTable from './JobApplicationTable'
-import ApplicationStatistics from './ApplicationStatistics'
-import DateRangeFilter from './DateRangeFilter'
-import { jobApplications } from '@/lib/data'
+import { useState, useEffect } from "react";
+import JobApplicationTable from "./JobApplicationTable";
+import ApplicationStatistics from "./ApplicationStatistics";
+import DateRangeFilter from "./DateRangeFilter";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 export default function Dashboard() {
-  const [dateRange, setDateRange] = useState({ start: '', end: '' })
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [sortBy, setSortBy] = useState('dateApplied')
+  const [dateRange, setDateRange] = useState({ start: "", end: "" });
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("dateApplied");
+  const [applications, setApplications] = useState<any[]>([]);
 
-  const filteredApplications = jobApplications.filter(app => {
-    if (statusFilter !== 'all' && app.status !== statusFilter) return false
-    if (dateRange.start && new Date(app.dateApplied) < new Date(dateRange.start)) return false
-    if (dateRange.end && new Date(app.dateApplied) > new Date(dateRange.end)) return false
-    return true
-  }).sort((a, b) => new Date(b[sortBy]).getTime() - new Date(a[sortBy]).getTime())
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/applications", {
+          cache: "no-cache",
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setApplications(data.applications || []);
+      } catch (error) {
+        console.error("Error fetching applications:", error);
+        setApplications([]);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const filteredApplications = applications
+    .filter((app) => {
+      if (statusFilter !== "all" && app.status !== statusFilter) return false;
+      if (
+        dateRange.start &&
+        new Date(app.dateApplied) < new Date(dateRange.start)
+      )
+        return false;
+      if (dateRange.end && new Date(app.dateApplied) > new Date(dateRange.end))
+        return false;
+      return true;
+    })
+    .sort(
+      (a, b) => new Date(b[sortBy]).getTime() - new Date(a[sortBy]).getTime()
+    );
 
   return (
     <div className="space-y-6">
@@ -55,6 +86,5 @@ export default function Dashboard() {
       <JobApplicationTable applications={filteredApplications} />
       <ApplicationStatistics applications={filteredApplications} />
     </div>
-  )
+  );
 }
-
