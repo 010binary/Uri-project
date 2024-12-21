@@ -21,7 +21,7 @@ ChartJS.register(
 );
 
 type JobApplication = {
-  id: string;
+  id: number;
   jobTitle: string;
   companyName: string;
   status: string;

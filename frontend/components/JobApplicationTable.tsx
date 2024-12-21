@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
   Pagination,
   PaginationContent,
@@ -15,29 +15,31 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/pagination";
 
 type JobApplication = {
-  id: string
-  jobTitle: string
-  companyName: string
-  status: string
-  dateApplied: string
-}
+  id: number;
+  jobTitle: string;
+  companyName: string;
+  status: string;
+  dateApplied: string;
+};
 
 type JobApplicationTableProps = {
-  applications: JobApplication[]
-}
+  applications: JobApplication[];
+};
 
-export default function JobApplicationTable({ applications }: JobApplicationTableProps) {
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 5
-  const totalPages = Math.ceil(applications.length / itemsPerPage)
+export default function JobApplicationTable({
+  applications,
+}: JobApplicationTableProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(applications.length / itemsPerPage);
 
   const paginatedApplications = applications.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
-  )
+  );
 
   return (
     <div>
@@ -56,7 +58,9 @@ export default function JobApplicationTable({ applications }: JobApplicationTabl
               <TableCell>{app.jobTitle}</TableCell>
               <TableCell>{app.companyName}</TableCell>
               <TableCell>{app.status}</TableCell>
-              <TableCell>{new Date(app.dateApplied).toLocaleDateString()}</TableCell>
+              <TableCell>
+                {new Date(app.dateApplied).toLocaleDateString()}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -64,10 +68,12 @@ export default function JobApplicationTable({ applications }: JobApplicationTabl
       <Pagination className="mt-4">
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious 
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-            />
+            {currentPage > 1 && (
+              <PaginationPrevious
+                className="cursor-pointer"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              />
+            )}
           </PaginationItem>
           {[...Array(totalPages)].map((_, index) => (
             <PaginationItem key={index}>
@@ -80,14 +86,15 @@ export default function JobApplicationTable({ applications }: JobApplicationTabl
             </PaginationItem>
           ))}
           <PaginationItem>
-            <PaginationNext 
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
+            <PaginationNext
+              className="cursor-pointer"
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
             />
           </PaginationItem>
         </PaginationContent>
       </Pagination>
     </div>
-  )
+  );
 }
-
