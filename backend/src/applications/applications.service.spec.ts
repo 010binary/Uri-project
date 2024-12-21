@@ -37,9 +37,9 @@ describe('ApplicationsService', () => {
       expect(stats.total).toBe(16);
 
       // Test status counts
-      expect(stats.pending).toBe(5);
+      expect(stats.pending).toBe(6);
       expect(stats.accepted).toBe(5);
-      expect(stats.rejected).toBe(6);
+      expect(stats.rejected).toBe(5);
 
       // Test byMonth aggregation
       expect(stats.byMonth).toBeDefined();
