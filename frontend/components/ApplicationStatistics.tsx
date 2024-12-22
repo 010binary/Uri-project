@@ -40,6 +40,10 @@ export default function ApplicationStatistics({
     return acc;
   }, {} as Record<string, number>);
 
+  // Sort status counts in descending order
+  const sortedEntries = Object.entries(statusCounts).sort((a, b) => b[1] - a[1]);
+  const sortedLabels = sortedEntries.map(([label]) => label);
+  const sortedData = sortedEntries.map(([, value]) => value);
 
   // Calculate specific counts
   const acceptedCount = applications.filter(app => app.status.toLowerCase() === 'accepted').length;
@@ -48,15 +52,15 @@ export default function ApplicationStatistics({
 
 
   const data = {
-    labels: Object.keys(statusCounts),
+    labels: sortedLabels,
     datasets: [
       {
         label: "Number of Applications",
-        data: Object.values(statusCounts),
+        data: sortedData,
         backgroundColor: [
-          "rgba(202, 138, 4, 0.4)",
-          "rgba(220, 38, 38, 0.4)",
           "rgba(22, 163, 74, 0.4)",
+          "rgba(220, 38, 38, 0.4)",
+          "rgba(202, 138, 4, 0.4)",
         ],
       },
     ],
