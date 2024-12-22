@@ -1,60 +1,51 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import JobApplicationTable from "./JobApplicationTable";
-import ApplicationStatistics from "./ApplicationStatistics";
-import DateRangeFilter from "./DateRangeFilter";
+import { useState } from "react"
+import JobApplicationTable from "./JobApplicationTable"
+import ApplicationStatistics from "./ApplicationStatistics"
+import DateRangeFilter from "./DateRangeFilter"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 
-export default function Dashboard() {
-  const [dateRange, setDateRange] = useState({ start: "", end: "" });
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("dateApplied");
-  const [applications, setApplications] = useState<any[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("https://uri-project-d5vg.onrender.com/applications", {
-          cache: "no-cache",
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setApplications(data.applications || []);
-      } catch (error) {
-        console.error("Error fetching applications:", error);
-        setApplications([]);
+type DashboardProps = {
+  initialData: {
+    applications: { applications: any[] }
+    stats: {
+      stats: {
+        total: number
+        pending: number
+        accepted: number
+        rejected: number
+        byMonth: Record<string, number>
       }
-    };
+    }
+  }
+}
 
-    fetchData();
-  }, []);
+export default function Dashboard({ initialData }: DashboardProps) {
+  const [dateRange, setDateRange] = useState({ start: "", end: "" })
+  const [statusFilter, setStatusFilter] = useState("all")
+  const [sortBy, setSortBy] = useState("dateApplied")
+  const [applications, setApplications] = useState(initialData.applications.applications || [])
+  const [stats, setStats] = useState(initialData.stats.stats)
 
-  const filteredApplications = applications
+  const filteredApplications = Array.isArray(applications) 
+  ? applications
     .filter((app) => {
-      if (statusFilter !== "all" && app.status !== statusFilter) return false;
-      if (
-        dateRange.start &&
-        new Date(app.dateApplied) < new Date(dateRange.start)
-      )
-        return false;
-      if (dateRange.end && new Date(app.dateApplied) > new Date(dateRange.end))
-        return false;
-      return true;
+      if (statusFilter !== "all" && app.status.toLowerCase() !== statusFilter) return false
+      if (dateRange.start && new Date(app.dateApplied) < new Date(dateRange.start)) return false
+      if (dateRange.end && new Date(app.dateApplied) > new Date(dateRange.end)) return false
+      return true
     })
     .sort(
       (a, b) => new Date(b[sortBy]).getTime() - new Date(a[sortBy]).getTime()
-    );
+    )
+  : []
 
   return (
     <div className="space-y-6">
@@ -84,7 +75,8 @@ export default function Dashboard() {
         </div>
       </div>
       <JobApplicationTable applications={filteredApplications} />
-      <ApplicationStatistics applications={filteredApplications} />
+      <ApplicationStatistics applications={filteredApplications} stats={stats} />
     </div>
-  );
+  )
 }
+

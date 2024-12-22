@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "react"
 import {
   Table,
   TableBody,
@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table"
 import {
   Pagination,
   PaginationContent,
@@ -15,31 +15,31 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from "@/components/ui/pagination"
 
 type JobApplication = {
-  id: number;
-  jobTitle: string;
-  companyName: string;
-  status: string;
-  dateApplied: string;
-};
+  id: number
+  jobTitle: string
+  companyName: string
+  status: string
+  dateApplied: string
+}
 
 type JobApplicationTableProps = {
-  applications: JobApplication[];
-};
+  applications: JobApplication[]
+}
 
 export default function JobApplicationTable({
   applications,
 }: JobApplicationTableProps) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const totalPages = Math.ceil(applications.length / itemsPerPage);
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 5
+  const totalPages = Math.ceil(applications.length / itemsPerPage)
 
   const paginatedApplications = applications.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
-  );
+  )
 
   return (
     <div>
@@ -86,15 +86,18 @@ export default function JobApplicationTable({
             </PaginationItem>
           ))}
           <PaginationItem>
-            <PaginationNext
-              className="cursor-pointer"
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-            />
+            {currentPage < totalPages && (
+              <PaginationNext
+                className="cursor-pointer"
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+              />
+            )}
           </PaginationItem>
         </PaginationContent>
       </Pagination>
     </div>
-  );
+  )
 }
+

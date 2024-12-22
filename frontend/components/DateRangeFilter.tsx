@@ -33,7 +33,7 @@ export default function DateRangeFilter({ onDateRangeChange }: DateRangeFilterPr
       </div>
       <Button
         onClick={handleDateChange}
-        className="w-full sm:w-auto bg-blue-400"
+        className="w-full sm:w-auto"
       >
         Apply Filter
       </Button>
