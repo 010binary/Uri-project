@@ -7,7 +7,7 @@ export class ApplicationsService {
       id: 1,
       jobTitle: 'Software Engineer',
       companyName: 'Tech Solutions',
-      status: 'Pending',
+      status: 'Accepted',
       dateApplied: '2024-12-01',
     },
     {
@@ -28,7 +28,7 @@ export class ApplicationsService {
       id: 4,
       jobTitle: 'UI/UX Designer',
       companyName: 'Creative Minds',
-      status: 'Pending',
+      status: 'Accepted',
       dateApplied: '2024-12-07',
     },
     {

@@ -40,6 +40,13 @@ export default function ApplicationStatistics({
     return acc;
   }, {} as Record<string, number>);
 
+
+  // Calculate specific counts
+  const acceptedCount = applications.filter(app => app.status.toLowerCase() === 'accepted').length;
+  const rejectedCount = applications.filter(app => app.status.toLowerCase() === 'rejected').length;
+  const pendingCount = applications.filter(app => app.status.toLowerCase() === 'pending').length;
+
+
   const data = {
     labels: Object.keys(statusCounts),
     datasets: [
@@ -47,9 +54,9 @@ export default function ApplicationStatistics({
         label: "Number of Applications",
         data: Object.values(statusCounts),
         backgroundColor: [
-          "rgba(255, 99, 132, 0.6)",
-          "rgba(54, 162, 235, 0.6)",
-          "rgba(255, 206, 86, 0.6)",
+          "rgba(202, 138, 4, 0.4)",
+          "rgba(220, 38, 38, 0.4)",
+          "rgba(22, 163, 74, 0.4)",
         ],
       },
     ],
@@ -85,8 +92,28 @@ export default function ApplicationStatistics({
 
   return (
     <div className="mt-8 w-full">
-      <h2 className="text-2xl font-bold mb-4">Application Statistics</h2>
-      <p className="mb-4">Total Applications: {applications.length}</p>
+       <h2 className="text-2xl font-bold mb-4">Application Statistics</h2>
+      
+      {/* Statistics Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <p className="text-gray-600 text-sm">Total Applications</p>
+          <p className="text-2xl font-bold">{applications.length}</p>
+        </div>
+        <div className="p-4 bg-green-50 rounded-lg">
+          <p className="text-gray-600 text-sm">Accepted</p>
+          <p className="text-2xl font-bold text-green-600">{acceptedCount}</p>
+        </div>
+        <div className="p-4 bg-red-50 rounded-lg">
+          <p className="text-gray-600 text-sm">Rejected</p>
+          <p className="text-2xl font-bold text-red-600">{rejectedCount}</p>
+        </div>
+        <div className="p-4 bg-yellow-50 rounded-lg">
+          <p className="text-gray-600 text-sm">Pending</p>
+          <p className="text-2xl font-bold text-yellow-600">{pendingCount}</p>
+        </div>
+      </div>
+
       <div className="h-64 w-full">
         <Bar data={data} options={options} />
       </div>
